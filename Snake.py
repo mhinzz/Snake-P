@@ -17,6 +17,9 @@ pygame.display.set_caption("mhinzz Snake Game")
 
 clock = pygame.time.Clock()
 
+gameOver = False
+gameMenu = False
+
 snakeSize = 10
 snakeSpeed = 15
 
@@ -50,7 +53,8 @@ def runAction(event, xSpeed, ySpeed):
 			ySpeed = snakeSize
 	return xSpeed, ySpeed
 
-def gameMenu(gameOver, gameMenu, snakeLength):
+# def gameMenuFunction(gameOver, gameMenu, snakeLength):
+def gameMenuFunction(snakeLength):
 	while gameMenu:
 		gameDisplay.fill(black)
 		gameOverMessage = messageFont.render("Game Over!", True, red)
@@ -88,7 +92,8 @@ def runGame():
 
 	while not gameOver:
 
-		gameOver, gameMenu = gameMenu(gameOver, gameMenu, snakeLength)
+		# gameOver, gameMenu = gameMenu(gameOver, gameMenu, snakeLength)
+		gameMenuFunction(snakeLength)
 
 		for event in pygame.event.get():
 			xSpeed, ySpeed = runAction(event, xSpeed, ySpeed)
