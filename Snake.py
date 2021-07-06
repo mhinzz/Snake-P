@@ -50,8 +50,8 @@ def runAction(event, xSpeed, ySpeed):
 			ySpeed = snakeSize
 	return xSpeed, ySpeed
 
-def closeGame(gameOver, gameClose, snakeLength):
-	while gameClose:
+def gameMenu(gameOver, gameMenu, snakeLength):
+	while gameMenu:
 		gameDisplay.fill(black)
 		gameOverMessage = messageFont.render("Game Over!", True, red)
 		gameDisplay.blit(gameOverMessage, [width / 3, height / 2])
@@ -61,18 +61,18 @@ def closeGame(gameOver, gameClose, snakeLength):
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				gameOver = True
-				gameClose = False
+				gameMenu = False
 			if event.type == pygame.KEYDOWN:
 				if event.key == pygame.K_1:
 					gameOver = True
-					gameClose = False
+					gameMenu = False
 				if event.key == pygame.K_2:
 					runGame()
-	return gameOver, gameClose
+	return gameOver, gameMenu
 
 def runGame():
 	gameOver = False
-	gameClose = False
+	gameMenu = False
 
 	x = width / 2
 	y = height / 2
@@ -88,13 +88,13 @@ def runGame():
 
 	while not gameOver:
 
-		gameOver, gameClose = closeGame(gameOver, gameClose, snakeLength)
+		gameOver, gameMenu = gameMenu(gameOver, gameMenu, snakeLength)
 
 		for event in pygame.event.get():
 			xSpeed, ySpeed = runAction(event, xSpeed, ySpeed)
 		
 		if (x >= width) or (x < 0) or (y >= height) or (y < 0):
-			gameClose = True
+			gameMenu = True
 
 		x += xSpeed
 		y += ySpeed
@@ -109,7 +109,7 @@ def runGame():
 
 		for pixel in snakePixels[:-1]:
 			if pixel == [x, y]:
-				gameClose = True
+				gameMenu = True
 
 		drawSnake(snakeSize, snakePixels)
 		printScore(snakeLength - 1)
