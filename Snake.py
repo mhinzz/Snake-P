@@ -72,11 +72,11 @@ def gameMenuFunction(snakeLength):
 					gameMenu = False
 				if event.key == pygame.K_2:
 					runGame()
-	return gameOver, gameMenu
+	# return gameOver, gameMenu
 
 def runGame():
 	gameOver = False
-	gameMenu = False
+	# gameMenu = False
 
 	x = width / 2
 	y = height / 2
