@@ -28,6 +28,7 @@ gameStart	= True
 gameOver	= False
 messageFont	= pygame.font.SysFont('ubuntu', 35)
 scoreFont	= pygame.font.SysFont('ubuntu', 25)
+otherFont	= pygame.font.SysFont('ubuntu', 25)
 
 def main():
 	print("==================Starting game==================")
@@ -38,9 +39,10 @@ def exit():
 	pygame.quit()
 	quit()
 
-def printScore(score):
-	text = scoreFont.render("Score: " + str(score), True, orange)
-	gameDisplay.blit(text, [0,0])
+def printScore(highScore, score):
+	text = "High Score: " + str(highScore) + " Score: " + str(score)
+	message = scoreFont.render(text, True, orange)
+	gameDisplay.blit(message, [0,0])
 
 def drawSnake(snakeSize, snakePixels):
 	for pixel in snakePixels:
@@ -52,16 +54,16 @@ def runAction(xSpeed, ySpeed):
 			exit()
 		elif event.type == pygame.KEYDOWN:
 			print(event)
-			if event.key == pygame.K_LEFT:
+			if event.key == pygame.K_LEFT and xSpeed == 0:
 				xSpeed = -snakeSize
 				ySpeed = 0
-			elif event.key == pygame.K_RIGHT:
+			elif event.key == pygame.K_RIGHT and xSpeed == 0:
 				xSpeed = snakeSize
 				ySpeed = 0
-			elif event.key == pygame.K_UP:
+			elif event.key == pygame.K_UP and ySpeed == 0 :
 				xSpeed = 0
 				ySpeed = -snakeSize
-			elif event.key == pygame.K_DOWN:
+			elif event.key == pygame.K_DOWN and ySpeed == 0:
 				xSpeed = 0
 				ySpeed = snakeSize
 			elif event.key == pygame.K_SPACE:
@@ -76,50 +78,38 @@ def gameMenuFunction(gameStart, gameOver, snakeLength):
 	while True:
 		gameDisplay.fill(black)
 
+		messages = [
+			["Error", messageFont, 35, red],
+			["High Score: " + str(snakeLength - 1), scoreFont, 25, orange],
+			["Score: " + str(snakeLength - 1), scoreFont, 25, orange],
+			["", scoreFont, 25, white],
+			["Press 'Space' for new game,", scoreFont, 25, white],
+			["and 'Backspace' to exit", scoreFont, 25, white],
+			["", scoreFont, 25, white],
+			["Use arrow keys to move", scoreFont, 25, white]
+		]
+
 		if gameStart:
-			gameMessage = messageFont.render("Game Start!", True, red)
+			messages[0][0] = "Game Start!"
 		elif gameOver:
-			gameMessage = messageFont.render("Game Over!", True, red)
-		else:
-			gameMessage = messageFont.render("Error", True, red)
+			messages[0][0] = "Game Over!"
 
-		gameDisplay.blit(gameMessage, 
-			[
-				(( width  / 2) - (gameMessage.get_width()  / 2)),
-				(((height / 2) - (gameMessage.get_height() / 2)) - 35)
-			]
-		)
+		start = 80
+		for message in messages:
+			text = message[1].render(message[0], True, message[3])
+			gameDisplay.blit(text, 
+				[
+					(( width  / 2) - (text.get_width()  / 2)),
+					(((height / 2) - (text.get_height() / 2)) - start)
+				]
+			)
+			start -= message[2]
 
-		highScore = scoreFont.render("High Score: " + str(snakeLength - 1), True, orange)
-		gameDisplay.blit(highScore, 
-			[
-				(( width  / 2) - (highScore.get_width()  / 2)),
-				(((height / 2) - (highScore.get_height() / 2)) - 0)
-			]
-		)
-		score = scoreFont.render("Score: " + str(snakeLength - 1), True, orange)
-		gameDisplay.blit(score, 
-			[
-				(( width  / 2) - (score.get_width()  / 2)),
-				(((height / 2) - (score.get_height() / 2)) + 25)
-			]
-		)
-		# gameMessage.len
 
 		# printScore(snakeLength - 1)
 		pygame.display.update()
 
 		runAction(0,0)
-		# for event in pygame.event.get():
-		# 	if event.type == pygame.QUIT:
-		# 		exit()
-		# 	if event.type == pygame.KEYDOWN:
-		# 		if event.key == pygame.K_1:
-		# 			exit()
-		# 		if event.key == pygame.K_2:
-		# 			runGame(False)
-		# 	else:
-		# 		continue
 
 def runGame(gameOver):
 	# Initial snake possition and speed 
@@ -161,7 +151,7 @@ def runGame(gameOver):
 		if len(snakePixels) > snakeLength:
 			del snakePixels[0]
 		drawSnake(snakeSize, snakePixels)
-		printScore(snakeLength - 1)
+		printScore(snakeLength - 1, snakeLength - 1)
 
 		# If snake is inside itself go to menu with game over
 		for pixel in snakePixels[:-1]:
