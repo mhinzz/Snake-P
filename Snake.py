@@ -85,7 +85,7 @@ def gameMenuFunction(gameStart, gameOver, snakeLength):
 
 		gameDisplay.blit(gameMessage, 
 			[
-				 ((width  / 2) - (gameMessage.get_width()  / 2)),
+				(( width  / 2) - (gameMessage.get_width()  / 2)),
 				(((height / 2) - (gameMessage.get_height() / 2)) - 35)
 			]
 		)
@@ -93,14 +93,14 @@ def gameMenuFunction(gameStart, gameOver, snakeLength):
 		highScore = scoreFont.render("High Score: " + str(snakeLength - 1), True, orange)
 		gameDisplay.blit(highScore, 
 			[
-				 ((width  / 2) - (highScore.get_width()  / 2)),
+				(( width  / 2) - (highScore.get_width()  / 2)),
 				(((height / 2) - (highScore.get_height() / 2)) - 0)
 			]
 		)
 		score = scoreFont.render("Score: " + str(snakeLength - 1), True, orange)
 		gameDisplay.blit(score, 
 			[
-				 ((width  / 2) - (score.get_width()  / 2)),
+				(( width  / 2) - (score.get_width()  / 2)),
 				(((height / 2) - (score.get_height() / 2)) + 25)
 			]
 		)
