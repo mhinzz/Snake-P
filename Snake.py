@@ -81,7 +81,7 @@ def gameMenuFunction(gameStart, gameOver, snakeLength):
 		elif gameOver:
 			gameMessage = messageFont.render("Game Over!", True, red)
 		else:
-			gameMessage  = messageFont.render("Error", True, red)
+			gameMessage = messageFont.render("Error", True, red)
 
 		gameDisplay.blit(gameMessage, 
 			[
