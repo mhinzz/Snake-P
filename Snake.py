@@ -6,13 +6,14 @@ pygame.init()
 
 # Define colours 
 white = (255, 255, 255)
+grey = (30, 30, 30)
 black = (0, 0, 0)
-red = (255, 0, 0)
 orange = (255, 165, 0)
+red = (255, 0, 0)
 
 # Define display
-width = 700
-height = 600
+width = 1000
+height = 800
 gameDisplay = pygame.display.set_mode((width, height))
 pygame.display.set_caption("mhinzz Snake Game")
 
@@ -20,9 +21,9 @@ pygame.display.set_caption("mhinzz Snake Game")
 clock = pygame.time.Clock()
 
 # Initial parameters
-snakeLength	= 1
-snakeSize	= 10
-snakeSpeed	= 15
+snakeLength	= 100
+snakeSize	= 20
+snakeSpeed	= 10
 gameMenu	= True
 gameStart	= True
 gameOver	= False
@@ -42,7 +43,7 @@ def exit():
 def printScore(highScore, score):
 	text = "High Score: " + str(highScore) + " Score: " + str(score)
 	message = scoreFont.render(text, True, orange)
-	gameDisplay.blit(message, [0,0])
+	gameDisplay.blit(message, [0,5])
 
 def drawSnake(snakeSize, snakePixels):
 	for pixel in snakePixels:
@@ -77,6 +78,7 @@ def runAction(xSpeed, ySpeed):
 def gameMenuFunction(gameStart, gameOver, snakeLength):
 	while True:
 		gameDisplay.fill(black)
+		pygame.draw.rect(gameDisplay, grey, [0, 0, width, 40])
 
 		messages = [
 			["Error", messageFont, 35, red],
@@ -121,21 +123,21 @@ def runGame(gameOver):
 	snakeLength = 1
 
 	# Set first food position
-	foodX = round(random.randrange(0, width  - snakeSize) / 10.0) * 10.0
-	foodY = round(random.randrange(0, height - snakeSize) / 10.0) * 10.0
+	foodX = round(random.randrange(0, width  - snakeSize) / 20.0) * 20.0
+	foodY = round(random.randrange(30, height - snakeSize) / 20.0) * 20.0
 
 	while not gameOver:
 		xSpeed, ySpeed = runAction(xSpeed, ySpeed)
 		
 		# If snake goes out of play area go to game menu with game over 
-		if (x >= width) or (x < 0) or (y >= height) or (y < 0):
+		if (x >= width) or (x < 0) or (y >= height) or (y < 30):
 			gameOver = True
 			break
 
 		# Consume food create new food if inside snake 
 		if (x == foodX) and (y == foodY):
-			foodX = round(random.randrange(0, width  - snakeSize) / 10.0) * 10.0
-			foodY = round(random.randrange(0, height - snakeSize) / 10.0) * 10.0
+			foodX = round(random.randrange(0, width  - snakeSize) / 20.0) * 20.0
+			foodY = round(random.randrange(30, height - snakeSize) / 20.0) * 20.0
 			snakeLength += 1
 
 		# Set the new speed
@@ -144,6 +146,7 @@ def runGame(gameOver):
 
 		# Clear screen and set food
 		gameDisplay.fill(black)
+		pygame.draw.rect(gameDisplay, grey, [0, 0, width, 40])
 		pygame.draw.rect(gameDisplay, orange, [foodX, foodY, snakeSize, snakeSize])
 
 		# Set new snake position
