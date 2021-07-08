@@ -1,5 +1,6 @@
 import pygame
 import random
+import os
 
 pygame.init()
 
@@ -23,6 +24,7 @@ clock = pygame.time.Clock()
 gameMenu	= True
 gameStart	= True
 gameOver	= False
+highScore	= 0
 messageFont	= pygame.font.SysFont('ubuntu', 35)
 scoreFont	= pygame.font.SysFont('ubuntu', 25)
 otherFont	= pygame.font.SysFont('ubuntu', 25)
@@ -46,14 +48,29 @@ class Snake:
 
 def main():
 	print("==================Starting game==================")
+	file = "high_score.txt"
+	global highScore
+	if os.path.exists(file):
+		print("here")
+		with open(file, 'r') as stream:
+			highScore = int(stream.readline())
+	else:
+		highScore = 0
+	print(highScore)
 	gameMenuFunction(gameStart, gameOver, Snake())
 
 def exit():
 	print("==================Quiting Game===================")
+	file = "high_score.txt"
+	global highScore
+	with open(file, 'w') as stream:
+		stream.write(str(highScore))
 	pygame.quit()
 	quit()
 
-def printScore(highScore, score):
+def printScore(score):
+	global highScore
+	if highScore < score: highScore = score
 	gameDisplay.blit(
 		scoreFont.render(
 			"High Score: " + str(highScore) + "    Score: " + str(score),
@@ -100,7 +117,7 @@ def gameMenuFunction(gameStart, gameOver, snake):
 
 	messages = [
 		MyMessage("Error", messageFont, 35, red),
-		MyMessage("High Score: " + str(snake.length - 1), scoreFont, 25, orange),
+		MyMessage("High Score: " + str(highScore), scoreFont, 25, orange),
 		MyMessage("Score: " + str(snake.length - 1), scoreFont, 25, orange),
 		MyMessage("", scoreFont, 25, white),
 		MyMessage("Press 'Space' for new game,", scoreFont, 25, white),
@@ -172,7 +189,7 @@ def runGame(snk):
 		pygame.draw.rect(gameDisplay, grey, [0, 0, width, 40])
 		pygame.draw.rect(gameDisplay, orange, [foodX, foodY, snk.size, snk.size])
 		drawSnake(snk.size, snk.pixels)
-		printScore(snk.length - 1, snk.length - 1)
+		printScore(snk.length - 1)
 
 		# Draw the updated food, score, and snake
 		pygame.display.flip()
