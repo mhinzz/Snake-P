@@ -1,5 +1,4 @@
 import pygame
-# import time
 import random
 
 pygame.init()
@@ -50,7 +49,7 @@ def main():
 	gameMenuFunction(gameStart, gameOver, Snake())
 
 def exit():
-	print("==================Quiting Game==================")
+	print("==================Quiting Game===================")
 	pygame.quit()
 	quit()
 
@@ -127,7 +126,7 @@ def gameMenuFunction(gameStart, gameOver, snake):
 		start -= message.fontSize
 
 	# printScore(length - 1)
-	pygame.display.update()
+	pygame.display.flip()
 	while True:
 		runAction(snake)
 
@@ -138,13 +137,24 @@ def runGame(snk):
 
 	while True:
 		snk = runAction(snk)
+
+		# Set new snake position
+		snk.pixels.append([snk.x, snk.y])
+		if len(snk.pixels) > snk.length:
+			del snk.pixels[0]
 		
 		# If snake goes out of play area go to game menu with game over 
 		if (snk.x >= width) or (snk.x < 0) or (snk.y >= height) or (snk.y < 30):
 			del snk.pixels[:]
 			gameMenuFunction(gameStart = False, gameOver = True, snake = snk)
 
-		# Consume food create new food if inside snake 
+		# If snake is inside itself go to menu with game over
+		for pixel in snk.pixels[:-1]:
+			if pixel == [snk.x, snk.y]:
+				del snk.pixels[:]
+				gameMenuFunction(gameStart = False, gameOver = True, snake = snk)
+
+		# Consume food create new food if eaten
 		if (snk.x == foodX) and (snk.y == foodY):
 			while True:
 				foodX = round(random.randrange(0,  width  - snk.size) / 20.0) * 20.0
@@ -157,31 +167,18 @@ def runGame(snk):
 		snk.x += snk.xSpeed
 		snk.y += snk.ySpeed
 
-		# Clear screen and set food
+		# Clear screen and draw score and snake
 		gameDisplay.fill(black)
 		pygame.draw.rect(gameDisplay, grey, [0, 0, width, 40])
 		pygame.draw.rect(gameDisplay, orange, [foodX, foodY, snk.size, snk.size])
-
-		# Set new snake position
-		snk.pixels.append([snk.x, snk.y])
-		if len(snk.pixels) > snk.length:
-			del snk.pixels[0]
 		drawSnake(snk.size, snk.pixels)
 		printScore(snk.length - 1, snk.length - 1)
 
-		# If snake is inside itself go to menu with game over
-		for pixel in snk.pixels[:-1]:
-			if pixel == [snk.x, snk.y]:
-				del snk.pixels[:]
-				gameMenuFunction(gameStart = False, gameOver = True, snake = snk)
-
 		# Draw the updated food, score, and snake
-		pygame.display.update()
+		pygame.display.flip()
 
 		# Next game tick
 		clock.tick(snk.speed)
-
-	gameMenuFunction(gameStart = False, gameOver = True, snake = snk)
 
 if __name__ == "__main__":
 	main()
