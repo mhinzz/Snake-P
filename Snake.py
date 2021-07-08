@@ -21,7 +21,7 @@ pygame.display.set_caption("mhinzz Snake Game")
 clock = pygame.time.Clock()
 
 # Initial parameters
-snakeLength	= 100
+snakeLength	= 1
 snakeSize	= 20
 snakeSpeed	= 10
 gameMenu	= True
@@ -30,6 +30,13 @@ gameOver	= False
 messageFont	= pygame.font.SysFont('ubuntu', 35)
 scoreFont	= pygame.font.SysFont('ubuntu', 25)
 otherFont	= pygame.font.SysFont('ubuntu', 25)
+
+class myMessage:
+	def __init__(self, text, font, fontSize, colour):
+		self.text= text
+		self.font = font
+		self.fontSize = fontSize
+		self.colour = colour
 
 def main():
 	print("==================Starting game==================")
@@ -41,9 +48,14 @@ def exit():
 	quit()
 
 def printScore(highScore, score):
-	text = "High Score: " + str(highScore) + " Score: " + str(score)
-	message = scoreFont.render(text, True, orange)
-	gameDisplay.blit(message, [0,5])
+	gameDisplay.blit(
+		scoreFont.render(
+			"High Score: " + str(highScore) + " Score: " + str(score), 
+			True, 
+			orange
+		), 
+		[0,5]
+	)
 
 def drawSnake(snakeSize, snakePixels):
 	for pixel in snakePixels:
@@ -81,32 +93,31 @@ def gameMenuFunction(gameStart, gameOver, snakeLength):
 		pygame.draw.rect(gameDisplay, grey, [0, 0, width, 40])
 
 		messages = [
-			["Error", messageFont, 35, red],
-			["High Score: " + str(snakeLength - 1), scoreFont, 25, orange],
-			["Score: " + str(snakeLength - 1), scoreFont, 25, orange],
-			["", scoreFont, 25, white],
-			["Press 'Space' for new game,", scoreFont, 25, white],
-			["and 'Backspace' to exit", scoreFont, 25, white],
-			["", scoreFont, 25, white],
-			["Use arrow keys to move", scoreFont, 25, white]
+			myMessage("Error", messageFont, 35, red),
+			myMessage("High Score: " + str(snakeLength - 1), scoreFont, 25, orange),
+			myMessage("Score: " + str(snakeLength - 1), scoreFont, 25, orange),
+			myMessage("", scoreFont, 25, white),
+			myMessage("Press 'Space' for new game,", scoreFont, 25, white),
+			myMessage("and 'Backspace' to exit", scoreFont, 25, white),
+			myMessage("", scoreFont, 25, white),
+			myMessage("Use arrow keys to move", scoreFont, 25, white)
 		]
 
 		if gameStart:
-			messages[0][0] = "Game Start!"
+			messages[0].text = "Game Start!"
 		elif gameOver:
-			messages[0][0] = "Game Over!"
+			messages[0].text = "Game Over!"
 
 		start = 80
 		for message in messages:
-			text = message[1].render(message[0], True, message[3])
+			text = message.font.render(message.text, True, message.colour)
 			gameDisplay.blit(text, 
 				[
 					(( width  / 2) - (text.get_width()  / 2)),
 					(((height / 2) - (text.get_height() / 2)) - start)
 				]
 			)
-			start -= message[2]
-
+			start -= message.fontSize
 
 		# printScore(snakeLength - 1)
 		pygame.display.update()
