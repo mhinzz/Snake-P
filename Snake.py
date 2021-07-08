@@ -21,9 +21,9 @@ pygame.display.set_caption("mhinzz Snake Game")
 clock = pygame.time.Clock()
 
 # Initial parameters
-snakeLength	= 1
-snakeSize	= 20
-snakeSpeed	= 10
+# length	= 1
+# snakeSize	= 20
+# speed	= 10
 gameMenu	= True
 gameStart	= True
 gameOver	= False
@@ -31,16 +31,28 @@ messageFont	= pygame.font.SysFont('ubuntu', 35)
 scoreFont	= pygame.font.SysFont('ubuntu', 25)
 otherFont	= pygame.font.SysFont('ubuntu', 25)
 
-class myMessage:
+class MyMessage:
 	def __init__(self, text, font, fontSize, colour):
 		self.text= text
 		self.font = font
 		self.fontSize = fontSize
 		self.colour = colour
 
+class Snake:
+	size = 20
+	speed = 10
+	def __init__(self, x, y, xSpeed, ySpeed, pixels, length):
+		self.x = x
+		self.y = y
+		self.xSpeed = xSpeed
+		self.ySpeed = ySpeed
+		self.pixels = pixels
+		self.length = length
+
 def main():
 	print("==================Starting game==================")
-	gameMenuFunction(gameStart, gameOver, snakeLength)
+	snk = Snake(width / 2, height / 2, 0, 0, [], 1)
+	gameMenuFunction(gameStart, gameOver, snk)
 
 def exit():
 	print("==================Quiting Game==================")
@@ -50,57 +62,57 @@ def exit():
 def printScore(highScore, score):
 	gameDisplay.blit(
 		scoreFont.render(
-			"High Score: " + str(highScore) + " Score: " + str(score), 
-			True, 
+			"High Score: " + str(highScore) + "    Score: " + str(score),
+			True,
 			orange
 		), 
-		[0,5]
+		[10,5]
 	)
 
-def drawSnake(snakeSize, snakePixels):
-	for pixel in snakePixels:
+def drawSnake(snakeSize, pixels):
+	for pixel in pixels:
 		pygame.draw.rect(gameDisplay, white, [pixel[0], pixel[1], snakeSize, snakeSize])
 
-def runAction(xSpeed, ySpeed):
+def runAction(snk):
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT:
 			exit()
 		elif event.type == pygame.KEYDOWN:
 			print(event)
-			if event.key == pygame.K_LEFT and xSpeed == 0:
-				xSpeed = -snakeSize
-				ySpeed = 0
-			elif event.key == pygame.K_RIGHT and xSpeed == 0:
-				xSpeed = snakeSize
-				ySpeed = 0
-			elif event.key == pygame.K_UP and ySpeed == 0 :
-				xSpeed = 0
-				ySpeed = -snakeSize
-			elif event.key == pygame.K_DOWN and ySpeed == 0:
-				xSpeed = 0
-				ySpeed = snakeSize
+			if event.key == pygame.K_LEFT and snk.xSpeed == 0:
+				snk.xSpeed = -snk.size
+				snk.ySpeed = 0
+			elif event.key == pygame.K_RIGHT and snk.xSpeed == 0:
+				snk.xSpeed = snk.size
+				snk.ySpeed = 0
+			elif event.key == pygame.K_UP and snk.ySpeed == 0 :
+				snk.xSpeed = 0
+				snk.ySpeed = -snk.size
+			elif event.key == pygame.K_DOWN and snk.ySpeed == 0:
+				snk.xSpeed = 0
+				snk.ySpeed = snk.size
 			elif event.key == pygame.K_SPACE:
-				runGame(False)
+				runGame(False, snk)
 			elif event.key == pygame.K_BACKSPACE:
 				exit()
 			else:
 				continue
-	return xSpeed, ySpeed
+	return snk
 
-def gameMenuFunction(gameStart, gameOver, snakeLength):
+def gameMenuFunction(gameStart, gameOver, snk):
 	while True:
 		gameDisplay.fill(black)
 		pygame.draw.rect(gameDisplay, grey, [0, 0, width, 40])
 
 		messages = [
-			myMessage("Error", messageFont, 35, red),
-			myMessage("High Score: " + str(snakeLength - 1), scoreFont, 25, orange),
-			myMessage("Score: " + str(snakeLength - 1), scoreFont, 25, orange),
-			myMessage("", scoreFont, 25, white),
-			myMessage("Press 'Space' for new game,", scoreFont, 25, white),
-			myMessage("and 'Backspace' to exit", scoreFont, 25, white),
-			myMessage("", scoreFont, 25, white),
-			myMessage("Use arrow keys to move", scoreFont, 25, white)
+			MyMessage("Error", messageFont, 35, red),
+			MyMessage("High Score: " + str(snk.length - 1), scoreFont, 25, orange),
+			MyMessage("Score: " + str(snk.length - 1), scoreFont, 25, orange),
+			MyMessage("", scoreFont, 25, white),
+			MyMessage("Press 'Space' for new game,", scoreFont, 25, white),
+			MyMessage("and 'Backspace' to exit", scoreFont, 25, white),
+			MyMessage("", scoreFont, 25, white),
+			MyMessage("Use arrow keys to move", scoreFont, 25, white)
 		]
 
 		if gameStart:
@@ -119,57 +131,61 @@ def gameMenuFunction(gameStart, gameOver, snakeLength):
 			)
 			start -= message.fontSize
 
-		# printScore(snakeLength - 1)
+		# printScore(length - 1)
 		pygame.display.update()
 
-		runAction(0,0)
+		runAction(snk)
 
-def runGame(gameOver):
+def runGame(gameOver, snk):
 	# Initial snake possition and speed 
-	x = width / 2
-	y = height / 2
-	xSpeed = 0
-	ySpeed = 0
-	snakePixels = []
-	snakeLength = 1
+	
+	# x = width / 2
+	# y = height / 2
+	# xSpeed = 0
+	# ySpeed = 0
+	# pixels = []
+	# length = 1
 
 	# Set first food position
-	foodX = round(random.randrange(0, width  - snakeSize) / 20.0) * 20.0
-	foodY = round(random.randrange(30, height - snakeSize) / 20.0) * 20.0
+	foodX = round(random.randrange(0, width  - snk.size) / 20.0) * 20.0
+	foodY = round(random.randrange(30, height - snk.size) / 20.0) * 20.0
 
 	while not gameOver:
-		xSpeed, ySpeed = runAction(xSpeed, ySpeed)
+		snk = runAction(snk)
 		
 		# If snake goes out of play area go to game menu with game over 
-		if (x >= width) or (x < 0) or (y >= height) or (y < 30):
+		if (snk.x >= width) or (snk.x < 0) or (snk.y >= height) or (snk.y < 30):
 			gameOver = True
 			break
 
 		# Consume food create new food if inside snake 
-		if (x == foodX) and (y == foodY):
-			foodX = round(random.randrange(0, width  - snakeSize) / 20.0) * 20.0
-			foodY = round(random.randrange(30, height - snakeSize) / 20.0) * 20.0
-			snakeLength += 1
+		if (snk.x == foodX) and (snk.y == foodY):
+			while True:
+				foodX = round(random.randrange(0,  width  - snk.size) / 20.0) * 20.0
+				foodY = round(random.randrange(30, height - snk.size) / 20.0) * 20.0
+				if not [foodX, foodY] in snk.pixels:
+					break
+			snk.length += 1
 
 		# Set the new speed
-		x += xSpeed
-		y += ySpeed
+		snk.x += snk.xSpeed
+		snk.y += snk.ySpeed
 
 		# Clear screen and set food
 		gameDisplay.fill(black)
 		pygame.draw.rect(gameDisplay, grey, [0, 0, width, 40])
-		pygame.draw.rect(gameDisplay, orange, [foodX, foodY, snakeSize, snakeSize])
+		pygame.draw.rect(gameDisplay, orange, [foodX, foodY, snk.size, snk.size])
 
 		# Set new snake position
-		snakePixels.append([x, y])
-		if len(snakePixels) > snakeLength:
-			del snakePixels[0]
-		drawSnake(snakeSize, snakePixels)
-		printScore(snakeLength - 1, snakeLength - 1)
+		snk.pixels.append([snk.x, snk.y])
+		if len(snk.pixels) > snk.length:
+			del snk.pixels[0]
+		drawSnake(snk.size, snk.pixels)
+		printScore(snk.length - 1, snk.length - 1)
 
 		# If snake is inside itself go to menu with game over
-		for pixel in snakePixels[:-1]:
-			if pixel == [x, y]:
+		for pixel in snk.pixels[:-1]:
+			if pixel == [snk.x, snk.y]:
 				gameOver = True
 				break
 
@@ -177,9 +193,9 @@ def runGame(gameOver):
 		pygame.display.update()
 
 		# Next game tick
-		clock.tick(snakeSpeed)
+		clock.tick(snk.speed)
 
-	gameMenuFunction(False, gameOver, snakeLength)
+	gameMenuFunction(False, gameOver, snk)
 
 if __name__ == "__main__":
 	main()
