@@ -51,12 +51,10 @@ def main():
 	file = "high_score.txt"
 	global highScore
 	if os.path.exists(file):
-		print("here")
 		with open(file, 'r') as stream:
 			highScore = int(stream.readline())
 	else:
 		highScore = 0
-	print(highScore)
 	gameMenuFunction(gameStart, gameOver, Snake())
 
 def exit():
