@@ -1,2 +1,2 @@
 # Snake-P
-Snake game programed in Python
+Snake game programed in Python using PyGame. 
