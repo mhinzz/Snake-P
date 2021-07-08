@@ -1,18 +1,18 @@
 import pygame
-import time
+# import time
 import random
 
 pygame.init()
 
 # Define colours 
-white = (255, 255, 255)
-grey = (30, 30, 30)
-black = (0, 0, 0)
-orange = (255, 165, 0)
-red = (255, 0, 0)
+white	= (255, 255, 255)
+grey	= (30, 30, 30)
+black	= (0, 0, 0)
+orange	= (255, 165, 0)
+red		= (255, 0, 0)
 
 # Define display
-width = 1000
+width  = 1000
 height = 800
 gameDisplay = pygame.display.set_mode((width, height))
 pygame.display.set_caption("mhinzz Snake Game")
@@ -21,9 +21,6 @@ pygame.display.set_caption("mhinzz Snake Game")
 clock = pygame.time.Clock()
 
 # Initial parameters
-# length	= 1
-# snakeSize	= 20
-# speed	= 10
 gameMenu	= True
 gameStart	= True
 gameOver	= False
@@ -99,7 +96,6 @@ def runAction(snk):
 	return snk
 
 def gameMenuFunction(gameStart, gameOver, snake):
-	
 	gameDisplay.fill(black)
 	pygame.draw.rect(gameDisplay, grey, [0, 0, width, 40])
 
@@ -132,10 +128,10 @@ def gameMenuFunction(gameStart, gameOver, snake):
 
 	# printScore(length - 1)
 	pygame.display.update()
+	while True:
+		runAction(snake)
 
-	runAction(snake)
-
-def runGame(gameOver, snk):
+def runGame(snk):
 	# Set first food position
 	foodX = round(random.randrange(0, width  - snk.size) / 20.0) * 20.0
 	foodY = round(random.randrange(30, height - snk.size) / 20.0) * 20.0
